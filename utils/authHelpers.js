@@ -1,14 +1,29 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
-export function getUserSensitiveData(userId) {
+/**
+ * Retrieves sensitive user data.
+ * Only allows the user themselves or an admin to access this information.
+ * @param {number|string} requestedUserId - The userId whose data is requested
+ * @param {number|string} authUserId - The authenticated user's userId
+ * @param {boolean} isAdmin - Whether the authenticated user is an admin
+ * @throws {Error} if access is unauthorized
+ */
+export function getUserSensitiveData(requestedUserId, authUserId, isAdmin = false) {
+  if (
+    String(requestedUserId) !== String(authUserId) &&
+    !isAdmin
+  ) {
+    throw new Error('Unauthorized access to sensitive user data');
+  }
+
   return {
-    userId,
-    email: `user${userId}@example.com`,
-    socialSecurityNumber: `***-**-${userId.toString().padStart(4, '0')}`,
-    creditScore: 750 + (userId % 100),
-    bankAccount: `****${userId.toString().padStart(4, '0')}`,
-    medicalRecord: `Patient ${userId} - Confidential Information`
+    userId: requestedUserId,
+    email: `user${requestedUserId}@example.com`,
+    socialSecurityNumber: `***-**-${requestedUserId.toString().padStart(4, '0')}`,
+    creditScore: 750 + (requestedUserId % 100),
+    bankAccount: `****${requestedUserId.toString().padStart(4, '0')}`,
+    medicalRecord: `Patient ${requestedUserId} - Confidential Information`
   };
 }
 
