@@ -1,6 +1,24 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
+// In-memory user store for demonstration (for production, use a real DB)
+const users = [
+  {
+    id: 1,
+    username: 'admin',
+    // password: AdminPass!23
+    hashedPassword: bcrypt.hashSync('AdminPass!23', 10),
+    isAdmin: true
+  },
+  {
+    id: 2,
+    username: 'user1',
+    // password: User1Pass!23
+    hashedPassword: bcrypt.hashSync('User1Pass!23', 10),
+    isAdmin: false
+  }
+];
+
 export function getUserSensitiveData(userId) {
   return {
     userId,
@@ -48,12 +66,11 @@ export function deleteUserAccount(userId, reason) {
 }
 
 export async function getUserFromDB(username) {
-  return {
-    id: parseInt(username) || 1,
-    username,
-    hashedPassword: await bcrypt.hash('password123', 10),
-    isAdmin: username === 'admin'
-  };
+  // Simulate DB lookup
+  const user = users.find(u => u.username === username);
+  if (!user) return null;
+  // Return a copy to avoid accidental mutation
+  return { ...user };
 }
 
 export async function deleteUserFromDB(userId) {
