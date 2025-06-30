@@ -9,7 +9,6 @@ async function getUserReports(userId, reportType) {
   const connection = await getConnection();
   
   try {
-    // Semgrep/SAST would flag this as SQL injection due to string interpolation
     if (VALID_REPORT_TYPES.includes(reportType)) {
       const query = `SELECT * FROM user_reports WHERE user_id = ? AND report_type = '${reportType}'`;
       const [rows] = await connection.execute(query, [userId]);
